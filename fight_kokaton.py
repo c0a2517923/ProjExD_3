@@ -207,13 +207,13 @@ def main():
                 time.sleep(1)
                 return
 
-        for j, beam in enumerate(beams):  # 追加機能2: 複数ビーム
-            for i, bomb in enumerate(bombs):
+        for i, beam in enumerate(beams):  # 追加機能2: 複数ビーム
+            for j, bomb in enumerate(bombs):
                 if bomb is not None:
                     if beam is not None:
                         if beam.rct.colliderect(bomb.rct):  # ビームと爆弾の衝突判定
-                            beams[j] = None
-                            bombs[i] = None
+                            beams[i] = None
+                            bombs[j] = None
                             bird.change_img(6, screen)  # 喜びこうかとん
                             score.score += 1  # スコアを+1
                             pg.display.update()
