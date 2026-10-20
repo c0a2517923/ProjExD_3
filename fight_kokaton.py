@@ -141,6 +141,35 @@ class Bomb:
         screen.blit(self.img, self.rct)
 
 
+class Score:
+    """
+    スコア表示のクラス
+    """
+    def __init__(self):
+        """
+        フォントの設定：self.fonto = pg.font.Font(None, 50)
+        文字色の設定：青 → (0, 0, 255)
+        スコアの初期値の設定：0
+        文字列Surfaceの生成：self.img = self.fonto.render("表示させる文字列", 0, 色)
+        文字列の中心座標：画面左下(横座標：100，縦座標：画面下部から50)
+
+        """
+        self.fonto = pg.font.Font(None, 50)
+        self.color = (0, 0, 255)
+        self.score = 0
+        self.img = self.fonto.render(f"Score: {self.score}", 0, self.color)
+        self.rct: pg.Rect = self.img.get_rect()
+        self.rct.center = 100, HEIGHT-50
+
+    def update(self, screen: pg.Surface):
+        """
+        現在のスコアを表示させる文字列Surfaceの生成
+        スクリーンにblit
+        """
+        self.img = self.fonto.render(f"Score: {self.score}", 0, self.color)
+        screen.blit(self.img, self.rct)
+
+
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))    
@@ -151,8 +180,9 @@ def main():
     # for i in range(NUM_OF_BOMBS):
     #     bombs.append(Bomb((255, 0, 0), 10))
     bombs = [Bomb((255, 0, 0), 10) for _ in range(NUM_OF_BOMBS)]  # 爆弾リスト
-
     beam = None  # ゲーム初期化時にはビームは存在しない
+    score = Score()
+
     clock = pg.time.Clock()
     tmr = 0
     while True:
@@ -181,11 +211,13 @@ def main():
                     beam = None
                     bombs[i] = None
                     bird.change_img(6, screen)  # 喜びこうかとん
+                    score.score += 1  # スコアを+1
                     pg.display.update()
         bombs = [bomb for bomb in bombs if bomb is not None]  # Noneを取り除く
 
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
+        score.update(screen)  # scoreの表示をアップデート
         if beam is not None:
             beam.update(screen) 
         for bomb in bombs:  
